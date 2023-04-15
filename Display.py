@@ -21,10 +21,9 @@ while running:
             if event.key == pygame.K_SPACE:
                 screen.fill("black")
                 m = BowyerWatson(pt_nb, screen)
-                m.display()
-                triangulation = m.BowyerWatson(1920, 1080)
-                for triangle in triangulation:
-                    triangle.display(screen)
+                m.draw()
+                m.BowyerWatson(1920, 1080)
+                m.drawTriangulation()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             print(event.pos)

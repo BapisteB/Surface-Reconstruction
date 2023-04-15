@@ -2,4 +2,4 @@
 
 ## Bowyer-Watson
 
-[Bowyer-Watson.py](Bowyer-Watson.py): Proof Of Concept for Bowyer-Watson algorithm, in python
+[BowyerWatson.py](BowyerWatson.py): Proof Of Concept for Bowyer-Watson algorithm, in python

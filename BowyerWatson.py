@@ -1,26 +1,21 @@
 import pygame
 from random import randint
 from Triangle import Triangle
+from Delaunay import Delaunay
 
-def edgeNotShared(tr, edge, triangles):
+def edgeNotShared(edge, triangles, tr):
     for triangle in triangles:
-        if tr == triangle:
+        if triangle == tr:
             continue
         edges = [(triangle.p1, triangle.p2), (triangle.p1, triangle.p3), (triangle.p2, triangle.p3)]
-        for e in edges:
-            if e == edge or (e[1], e[0]) == edge:
-                return False
+        if edge in edges or (edge[1], edge[0]) in edges:
+            return False
     return True
 
-class BowyerWatson:
-    def __init__(self, nbPoints, screen):
-        self.screen = screen
-        self.points = [pygame.Vector2(randint(0, screen.get_width()), randint(0, screen.get_height())) for i in range(nbPoints)]
-        #self.points = [pygame.Vector2(randint(0, 500), randint(0, 500)) for i in range(nbPoints)]
+class BowyerWatson(Delaunay):
 
-    def display(self, color = "red"):
-        for pt in self.points:
-            pygame.draw.circle(self.screen, color, pt, 5)
+    def __init__(self, nbPoints, screen):
+        super().__init__(nbPoints, screen)
 
     def computeSuperTriangle(self):
         # We compute f(x) = ax + b with f(w) = h
@@ -40,15 +35,17 @@ class BowyerWatson:
             for triangle in triangulation:
                 if triangle.circumscribed(pt):
                     badTriangle.append(triangle)
+
             polygon = []
-            # This double for can be optimised :)
-            for triangle in badTriangle:
-                edges = [(triangle.p1, triangle.p2), (triangle.p1, triangle.p3), (triangle.p2, triangle.p3)]
+            for badT in badTriangle:
+                edges = [(badT.p1, badT.p2),
+                         (badT.p1, badT.p3),
+                         (badT.p2, badT.p3)]
                 for edge in edges:
-                    if edgeNotShared(triangle, edge, badTriangle):
+                    if edgeNotShared(edge, badTriangle, badT):
                         polygon.append(edge)
 
-            res = triangulation[:]
+            res = triangulation[::]
             for triangle in badTriangle:
                 for tr in triangulation:
                     if tr == triangle:
@@ -58,12 +55,11 @@ class BowyerWatson:
             for edge in polygon:
                 triangulation.append(Triangle(pt, edge[1], edge[0]))
 
-        res = triangulation[:]
+        res = triangulation[::]
         for tr in triangulation:
             if (tr.p1 == sup.p1 or tr.p1 == sup.p2 or tr.p1 == sup.p3
                     or tr.p2 == sup.p1 or tr.p2 == sup.p2 or tr.p2 == sup.p3
                     or tr.p3 == sup.p1 or tr.p3 == sup.p2 or tr.p3 == sup.p3):
                 res.remove(tr)
 
-        return res
-
+        self.triangulation = res

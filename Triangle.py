@@ -7,7 +7,7 @@ class Triangle:
         self.p2 = p2
         self.p3 = p3
 
-    def display(self, screen, color = "blue"):
+    def draw(self, screen, color = "blue"):
         pygame.draw.line(screen, color, self.p1, self.p2)
         pygame.draw.line(screen, color, self.p1, self.p3)
         pygame.draw.line(screen, color, self.p2, self.p3)
