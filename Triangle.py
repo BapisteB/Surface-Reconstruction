@@ -6,6 +6,7 @@ class Triangle:
         self.p1 = p1
         self.p2 = p2
         self.p3 = p3
+        self.circ = None
 
     def draw(self, screen, color = "blue"):
         pygame.draw.line(screen, color, self.p1, self.p2)
@@ -25,7 +26,7 @@ class Triangle:
         or (t.p3 == self.p2 and t.p1 == self.p3 and t.p2 == self.p1)
         or (t.p3 == self.p3 and t.p1 == self.p1 and t.p2 == self.p2))
 
-    def circumscribed(self, point):
+    def getCircumscribed(self):
         ax = self.p1.x
         ay = self.p1.y
         bx = self.p2.x
@@ -33,10 +34,11 @@ class Triangle:
         cx = self.p3.x
         cy = self.p3.y
 
+        # Formula from Wikipedia
         # compute the center coordinates
         d = 2 * (ax*(by-cy) + bx*(cy-ay) + cx*(ay-by))
         if (d == 0):
-            return False
+            return 0, 0, 0
         ad = ax*ax + ay*ay
         bd = bx*bx + by*by
         cd = cx*cx + cy*cy
@@ -48,8 +50,12 @@ class Triangle:
         dy = y - ay
         r = sqrt(dx ** 2 + dy ** 2)
 
-        #pygame.draw.circle(screen, "red", pygame.Vector2(x, y), r, width=1)
+        return x, y, r
+
+    
+    def isInCircumscribed(self, point):
+        x, y, r = self.getCircumscribed()
         if (point.x - x) ** 2 + (point.y - y) ** 2 <= r ** 2:
-            #pygame.draw.circle(screen, "green", pygame.Vector2(x, y), r, width=1)
+            self.circ = point
             return True
         return False
